@@ -1,8 +1,7 @@
 from mycroft import MycroftSkill, intent_file_handler, intent_handler
 from adapt.intent import IntentBuilder
 from os.path import dirname, abspath
-from .light import set, off, fade, writepins, resetpins
-DeskState = open("state_of_pins.txt", "r+")
+from .light import set, off, fade
 
 #these are redundant as they are listed in both the light.py file and here
 #this is just lazy coding on my part, they are the pin numbers

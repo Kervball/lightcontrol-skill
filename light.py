@@ -1,10 +1,12 @@
 import wiringpi
-DeskState = open("state_of_pins.txt", "r+")
 
+#global variables to replace 0 and 1 where needed
+ON = 100
+OFF = 0
 
 #Pin Array is the the state of the pins, we use it to reset the pins after we fade for startup or for wake word
 #[front red, front blue, front green, back red, back blue, back green]
-pinArray = [0,0,0,0,0,0] 
+pinArray = [OFF,OFF,OFF,OFF,OFF,OFF] 
 
 #give pin numbers (the set up I run uses the GPIO pin numbering )
 red_front = 16
@@ -27,22 +29,12 @@ wiringpi.pinMode(blue_front, 1)
 wiringpi.pinMode(green_front, 1)
 
 #thest comands create the ablity for PWM on each pin with the range of each
-wiringpi.softPwmCreate(red_front, 0, 100)
-wiringpi.softPwmCreate(blue_front, 0, 100)
-wiringpi.softPwmCreate(green_front, 0, 100)
-wiringpi.softPwmCreate(red_back, 0, 100)
-wiringpi.softPwmCreate(blue_back, 0, 100)
-wiringpi.softPwmCreate(green_back, 0, 100)
-
-#global variables to replace 0 and 1 where needed
-ON = 100
-OFF = 0
-
-def writepins():
-    for state in pinArray:
-    DeskState.write(state)
-    DeskState.write("\n")
-
+wiringpi.softPwmCreate(red_front, OFF, ON)
+wiringpi.softPwmCreate(blue_front, OFF, ON)
+wiringpi.softPwmCreate(green_front, OFF, ON)
+wiringpi.softPwmCreate(red_back, OFF, ON)
+wiringpi.softPwmCreate(blue_back, OFF, ON)
+wiringpi.softPwmCreate(green_back, OFF, ON)
 
 def resetpins():
     wiringpi.softPwmWrite(red_front, pinArray[0])
@@ -51,10 +43,6 @@ def resetpins():
     wiringpi.softPwmWrite(red_back, pinArray[0])
     wiringpi.softPwmWrite(blue_back, pinArray[1])
     wiringpi.softPwmWrite(green_back, pinArray[2])
-
-
-
-
 
 def setup():
     wiringpi.wiringPiSetupGpio()
@@ -66,16 +54,14 @@ def setup():
     wiringpi.pinMode(blue_front, 1)
     wiringpi.pinMode(green_front, 1)
 
-    wiringpi.softPwmCreate(red_front, 0, 100)
-    wiringpi.softPwmCreate(blue_front, 0, 100)
-    wiringpi.softPwmCreate(green_front, 0, 100)
-    wiringpi.softPwmCreate(red_back, 0, 100)
-    wiringpi.softPwmCreate(blue_back, 0, 100)
-    wiringpi.softPwmCreate(green_back, 0, 100)
+    wiringpi.softPwmCreate(red_front, OFF, ON)
+    wiringpi.softPwmCreate(blue_front, OFF, ON)
+    wiringpi.softPwmCreate(green_front, OFF, ON)
+    wiringpi.softPwmCreate(red_back, OFF, ON)
+    wiringpi.softPwmCreate(blue_back, OFF, ON)
+    wiringpi.softPwmCreate(green_back, OFF, ON)
 
 #color functions----------------------------------------
-
-
 def white(red,blue,green):
     wiringpi.softPwmWrite(red, ON)
     wiringpi.softPwmWrite(green, ON)
@@ -161,74 +147,75 @@ def set(location, color):
             pinArray[2] = ON
         elif color == "teal":
             teal(red_front, blue_front, green_front)
-            pinArray[0] = 0
-            pinArray[1] = 1
-            pinArray[2] = 1
+            pinArray[0] = OFF
+            pinArray[1] = ON
+            pinArray[2] = ON
     elif location == "BACK LIGHTS":
         if color == "red":
             red(red_back, blue_back, green_back)
-            pinArray[3] = 1
-            pinArray[4] = 0
-            pinArray[5] = 0
+            pinArray[3] = ON
+            pinArray[4] = OFF
+            pinArray[5] = OFF
         elif color == "blue":
             blue(red_back, blue_back, green_back)
-            pinArray[3] = 0
-            pinArray[4] = 1
-            pinArray[5] = 0
+            pinArray[3] = OFF
+            pinArray[4] = ON
+            pinArray[5] = OFF
         elif color == "green":
             green(red_back, blue_back, green_back)
-            pinArray[3] = 0
-            pinArray[4] = 0
-            pinArray[5] = 1
+            pinArray[3] = OFF
+            pinArray[4] = OFF
+            pinArray[5] = ON
         elif color == "purple":
             purple(red_back, blue_back, green_back)
-            pinArray[3] = 1
-            pinArray[4] = 1
-            pinArray[5] = 0
+            pinArray[3] = ON
+            pinArray[4] = ON
+            pinArray[5] = OFF
         elif color == "white":
             white(red_back, blue_back, green_back)
-            pinArray[3] = 1
-            pinArray[4] = 1
-            pinArray[5] = 1
+            pinArray[3] = ON
+            pinArray[4] = ON
+            pinArray[5] = ON
         elif color == "yellow":
             yellow(red_back, blue_back, green_back)
-            pinArray[3] = 1
-            pinArray[4] = 0
-            pinArray[5] = 1
+            pinArray[3] = ON
+            pinArray[4] = OFF
+            pinArray[5] = ON
         elif color == "teal":
             teal(red_back, blue_back, green_back)
-            pinArray[3] = 0
-            pinArray[4] = 1
-            pinArray[5] = 1
+            pinArray[3] = OFF
+            pinArray[4] = ON
+            pinArray[5] = ON
     elif location == "BOTH LIGHTS":
         if color == "red":
             red(red_front, blue_front, green_front)
             red(red_back, blue_back, green_back)
-            pinArray = [1,0,0,1,0,0]
+            pinArray = [ON,OFF,OFF,ON,OFF,OFF]
         elif color == "blue":
             blue(red_front, blue_front, green_front)
             blue(red_back, blue_back, green_back)
-            pinArray = [0,1,0,0,1,0]
+            pinArray = [OFF,ON,OFF,OFF,ON,0]
         elif color == "green":
             green(red_front, blue_front, green_front)
             green(red_back, blue_back, green_back)
-            pinArray = [0,0,1,0,0,1]
+            pinArray = [OFF,OFF,ON,OFF,OFF,ON]
         elif color == "purple":
             purple(red_front, blue_front, green_front)
             purple(red_back, blue_back, green_back)
-            pinArray = [1,1,0,1,1,0]
+            pinArray = [ON,ON,OFF,ON,ON,OFF]
         elif color == "white":
             white(red_front, blue_front, green_front)
             white(red_back, blue_back, green_back)
-            pinArray = [1,1,1,1,1,1]
+            pinArray = [ON,ON,ON,ON,ON,ON]
         elif color == "yellow":
             yellow(red_front, blue_front, green_front)
             yellow(red_back, blue_back, green_back)
-            pinArray = [1,0,1,1,0,1]
+            pinArray = [ON,OFF,ON,ON,OFF,ON]
         elif color == "teal":
             teal(red_front, blue_front, green_front)
             teal(red_back, blue_back, green_back)
-            pinArray = [0,1,1,0,1,1]
+            pinArray = [OFF,ON,ON,OFF,ON,ON]
+
 #---------------------fade functions
 def fade(front,back):
         for brightness in range(0,100):
@@ -239,3 +226,4 @@ def fade(front,back):
             wiringpi.softPwmWrite(front, brightness)
             wiringpi.softPwmWrite(back, brightness)
             wiringpi.delay(15)
+    resetpins()
